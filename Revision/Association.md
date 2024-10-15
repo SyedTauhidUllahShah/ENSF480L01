@@ -26,9 +26,9 @@ Here is how the UML diagram for an association between a Student and a Course wo
 - A Student can enroll in many Courses.
 - A Course can have many Students.
 
-![
-    
-](image.png)
+![Alt text](image.png)
+
+
 #### UML Explanation:
 - The association between Student and Course is represented by a straight line connecting the two classes.
 - The multiplicity `0..*` on both ends means that a student can be enrolled in many courses, and a course can have many students (many-to-many relationship).
