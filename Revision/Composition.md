@@ -28,17 +28,7 @@ In this example:
 - A House can have multiple Rooms.
 - The Room objects cannot exist independently of the House. If the House is destroyed, the Rooms are also destroyed.
 
-```md
-+------------+                +------------+
-|   House    |<>-------------->|   Room     |
-+------------+                +------------+
-| -houseName |                | -roomName  |
-| +addRoom() |                +------------+
-| +showRooms()|                | +getName() |
-+------------+                +------------+
-       1                             1..*
-   Composition
-```
+![Alt text](image-2.png)
 
 ### UML Explanation:
 
