@@ -1,5 +1,5 @@
 
-# Inheritance in C++ (Single Inheritance)
+# Inheritance in C++ (Inheritance)
 
 Inheritance is one of the core principles of object-oriented programming (OOP). In C++, inheritance allows a class (called a derived class) to inherit properties and behaviors (members and methods) from another class (called a base class). The derived class can use the functionality of the base class, and it can also extend or override that functionality.
 
@@ -16,7 +16,7 @@ Inheritance is one of the core principles of object-oriented programming (OOP). 
 
 ---
 
-## Syntax of Single Inheritance
+## Syntax of Inheritance
 
 The syntax for inheritance in C++ is:
 
@@ -34,7 +34,7 @@ The colon (`:`) indicates inheritance, and `public` specifies that the derived c
 
 ---
 
-## Example: Single Inheritance
+## Example: Inheritance
 
 Let’s look at a simple example where a `BaseClass` defines common attributes and methods, and a `DerivedClass` inherits those properties and methods.
 
@@ -94,7 +94,7 @@ When dealing with inheritance in C++, one of the key concepts is how constructor
 
 ---
 
-## Constructor Call in Single Inheritance
+## Constructor Call in Inheritance
 
 Let’s explore the details of how constructors are called in inheritance through an example.
 
@@ -254,11 +254,278 @@ Dog constructor with name: Buddy called.
 
 
 
+# Virtual in Inheritance in C++
+
+The `virtual` keyword in C++ is a key concept in inheritance that allows for run-time polymorphism. It enables the dynamic binding of methods, meaning that the function to be executed is determined at runtime based on the actual object type, rather than the type of the pointer or reference. This is essential in object-oriented programming when you want derived classes to provide their own implementations of base class methods.
+
+When you declare a method as `virtual` in a base class, it allows that method to be overridden in derived classes, and when you invoke that method on a base class pointer or reference, the most derived version of the function is called.
+
+---
+
+## Key Concepts of `virtual` in Inheritance:
+
+- **Virtual Function**:
+  - A function in the base class that is declared with the `virtual` keyword, allowing it to be overridden by derived classes.
+
+- **Dynamic Binding (Late Binding)**:
+  - The process of determining which function to call (base or derived class version) occurs at runtime. C++ uses a mechanism called the vtable (virtual table) to achieve this.
+
+- **Overriding**:
+  - Derived classes provide their own version of the virtual function, which "overrides" the base class version.
+
+- **Base Class Pointer/Reference**:
+  - The `virtual` mechanism is primarily used when calling methods via a base class pointer or reference. The object being pointed to determines the version of the function that gets called.
+
+- **Virtual Destructors**:
+  - If you intend to delete a derived class object via a base class pointer, the base class destructor should be declared as `virtual` to ensure that the derived class destructor is called first.
+
+---
+
+## Basic Example of Virtual Functions in Inheritance
+
+Let’s explore a basic example where `virtual` enables a function to be overridden in a derived class.
+
+### Example: Virtual Function
+
+```cpp
+#include <iostream>
+using namespace std;
+
+// Base class
+class Animal {
+public:
+    // Virtual function in the base class
+    virtual void makeSound() {
+        cout << "Animal makes a sound" << endl;
+    }
+};
+
+// Derived class
+class Dog : public Animal {
+public:
+    // Override the base class method
+    void makeSound() override {
+        cout << "Dog barks" << endl;
+    }
+};
+
+// Derived class
+class Cat : public Animal {
+public:
+    // Override the base class method
+    void makeSound() override {
+        cout << "Cat meows" << endl;
+    }
+};
+
+int main() {
+    Animal* animalPtr;  // Base class pointer
+
+    Dog dog;
+    Cat cat;
+
+    // Point to Dog object and call makeSound
+    animalPtr = &dog;
+    animalPtr->makeSound();  // Output: Dog barks (dynamic binding)
+
+    // Point to Cat object and call makeSound
+    animalPtr = &cat;
+    animalPtr->makeSound();  // Output: Cat meows (dynamic binding)
+
+    return 0;
+}
+```
+
+---
+
+### Explanation:
+
+- **Virtual Function in Base Class**:
+  - The function `makeSound()` in the base class `Animal` is declared with the `virtual` keyword. This allows derived classes (`Dog` and `Cat`) to override it with their own versions.
+
+- **Overriding in Derived Classes**:
+  - Both `Dog` and `Cat` provide their own implementation of `makeSound()`, overriding the base class version.
+
+- **Dynamic Binding**:
+  - The pointer `animalPtr` of type `Animal*` points to objects of both `Dog` and `Cat`. When `makeSound()` is called, the version of the function specific to the object being pointed to (either `Dog` or `Cat`) is executed. This behavior is determined at runtime.
+
+- **Runtime Polymorphism**:
+  - The use of `virtual` enables runtime polymorphism. Even though the pointer `animalPtr` is of type `Animal*`, the correct method (either Dog's or Cat's version of `makeSound()`) is called based on the actual type of the object it points to.
+
+---
+
+## Virtual Functions and the vtable (Virtual Table)
+
+When you declare a function as `virtual`, C++ creates a `vtable` (virtual table) for the class. The vtable is essentially a lookup table that holds pointers to the virtual functions for that class. When an object is created, a hidden `vptr` (virtual pointer) is initialized, which points to the vtable. This enables the runtime determination of which function to call (dynamic binding).
+
+- **Base Class vtable**:
+  - The base class (`Animal`) has a vtable with a pointer to the `Animal::makeSound()` function.
+
+- **Derived Class vtable**:
+  - The derived classes (`Dog` and `Cat`) each have their own vtables. The vtable for `Dog` contains a pointer to `Dog::makeSound()`, and the vtable for `Cat` contains a pointer to `Cat::makeSound()`.
+
+- **Dynamic Binding**:
+  - When you call a virtual function through a base class pointer (`animalPtr->makeSound()`), the `vptr` of the object being pointed to is used to look up the correct function in the vtable. This ensures that the most derived version of the function is called.
+
+
+
+---
+
+## Why Use Virtual Functions?
+
+- **Polymorphism**:
+  - Virtual functions allow you to write flexible and reusable code. The base class can define an interface (set of methods), and derived classes can provide their own implementation. This allows you to work with base class pointers or references while still invoking the most specific behavior of derived class objects.
+
+- **Extensibility**:
+  - With virtual functions, you can extend your base class with new derived classes, and the existing code that uses base class pointers will automatically work with the new derived classes, calling their specific implementations.
+
+- **Code Maintainability**:
+  - Using virtual functions and polymorphism can reduce redundancy. You can define common behavior in the base class and customize it in derived classes, allowing code sharing and specialization where necessary.
+
+---
+
+## Overriding Virtual Functions
+
+When you override a virtual function in a derived class, you can explicitly indicate that you are overriding the base class method by using the `override` specifier. This is not mandatory, but it helps catch errors during compilation if the function signature does not match the base class version.
+
+---
+
+### Example: Using `override` Specifier
+
+```cpp
+#include <iostream>
+using namespace std;
+
+// Base class
+class Animal {
+public:
+    virtual void makeSound() {
+        cout << "Animal makes a sound" << endl;
+    }
+};
+
+// Derived class
+class Dog : public Animal {
+public:
+    // Use override to explicitly indicate that this function overrides the base class function
+    void makeSound() override {
+        cout << "Dog barks" << endl;
+    }
+};
+
+int main() {
+    Animal* animalPtr = new Dog();  // Base class pointer to derived class object
+    animalPtr->makeSound();  // Output: Dog barks (dynamic binding)
+
+    delete animalPtr;
+    return 0;
+}
+```
+
+---
+
+### Explanation:
+
+The `override` keyword is optional but recommended. It tells the compiler that the method is meant to override a base class method. If the function signatures don’t match (for example, if you misspell the function name), the compiler will catch the error.
+
+---
+
+## Virtual Destructors
+
+In C++, when you are using inheritance and polymorphism (i.e., when you have base class pointers pointing to derived class objects), you should declare the base class destructor as `virtual`. This ensures that when an object is deleted via a base class pointer, the derived class destructor is called first, followed by the base class destructor.
+
+---
+
+### Example: Virtual Destructor
+
+```cpp
+#include <iostream>
+using namespace std;
+
+// Base class with virtual destructor
+class Animal {
+public:
+    Animal() {
+        cout << "Animal constructor called." << endl;
+    }
+
+    virtual ~Animal() {
+        cout << "Animal destructor called." << endl;
+    }
+};
+
+// Derived class
+class Dog : public Animal {
+public:
+    Dog() {
+        cout << "Dog constructor called." << endl;
+    }
+
+    ~Dog() {
+        cout << "Dog destructor called." << endl;
+    }
+};
+
+int main() {
+    Animal* animalPtr = new Dog();  // Base class pointer to derived class object
+    delete animalPtr;  // Properly calls Dog destructor first, then Animal destructor
+
+    return 0;
+}
+```
+
+---
+
+## Pure Virtual Functions and Abstract Classes
+
+A pure virtual function is a virtual function that is declared but not defined in the base class. It forces the derived classes to provide an implementation. A class that contains at least one pure virtual function is called an abstract class and cannot be instantiated directly.
+
+---
+
+### Example: Pure Virtual Function
+
+```cpp
+#include <iostream>
+using namespace std;
+
+// Base class (Abstract class)
+class Animal {
+public:
+    // Pure virtual function (no implementation)
+    virtual void makeSound() = 0;
+};
+
+// Derived class
+class Dog : public Animal {
+public:
+    // Override the pure virtual function
+    void makeSound() override {
+        cout << "Dog barks" << endl;
+    }
+};
+
+int main() {
+    Animal* animalPtr = new Dog();  // Base class pointer to derived class object
+    animalPtr->makeSound();  // Output: Dog barks
+
+    delete animalPtr;
+    return 0;
+}
+```
+
+---
+
+### Explanation:
+
+- **Pure Virtual Function**: The `Animal` class declares `makeSound()` as a pure virtual function (`virtual void makeSound() = 0;`). This makes `Animal` an abstract class, which means it cannot be instantiated directly.
+
+- **Forcing Derived Classes to Implement**: Since `Animal` declares a pure virtual function, any derived class (such as `Dog`) must provide an implementation for `makeSound()`. If the derived class does not implement the function, it too will become abstract and cannot be instantiated.
 
 
 
 
-# Destructors in Single Inheritance in C++
+
+# Destructors in Inheritance in C++
 
 A destructor is a special member function in C++ that is called automatically when an object goes out of scope or is explicitly deleted. Its primary role is to release any resources (such as dynamically allocated memory) held by an object and perform clean-up tasks. In the context of inheritance, destructors play a key role in ensuring that both the base class and the derived class are properly cleaned up.
 
@@ -278,9 +545,9 @@ A destructor is a special member function in C++ that is called automatically wh
 
 ---
 
-## Example: Destructors in Single Inheritance
+## Example: Destructors in Inheritance
 
-Let’s look at a simple example of destructors in single inheritance, demonstrating the order of destructor calls.
+Let’s look at a simple example of destructors in inheritance, demonstrating the order of destructor calls.
 
 ```cpp
 #include <iostream>
@@ -505,3 +772,5 @@ Animal destructor called.
 
 - **Automatic Destructor Generation**:
   - If no destructor is explicitly defined, the compiler generates a default destructor. However, this default destructor does not handle dynamic memory cleanup, so if dynamic memory allocation is involved, a custom destructor is necessary.
+
+
