@@ -19,14 +19,9 @@ In UML diagrams, realization is represented using a dashed line with an empty ar
 ## UML Notation for Realization:
 In UML, realization is shown as a dashed line with an open triangle pointing towards the interface, like this:
 
-```
-+--------------+             +----------------+
-|   Interface  |<>------------|    Class       |
-+--------------+             +----------------+
-| +method1()   |             | +method1()      |
-| +method2()   |             | +method2()      |
-+--------------+             +----------------+
-```
+
+
+![Alt text](image-3.png)
 
 ## Example: Realization in C++ (Interface and Class)
 
