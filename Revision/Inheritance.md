@@ -774,3 +774,221 @@ Animal destructor called.
   - If no destructor is explicitly defined, the compiler generates a default destructor. However, this default destructor does not handle dynamic memory cleanup, so if dynamic memory allocation is involved, a custom destructor is necessary.
 
 
+
+# Public, Private, and Protected Inheritance in C++
+
+In C++, inheritance can be categorized based on the access specifier used when a derived class inherits from a base class. These access specifiers control how the members of the base class are inherited in the derived class and how they can be accessed by the derived class and other parts of the program.
+
+The three types of inheritance are:
+- Public Inheritance
+- Private Inheritance
+- Protected Inheritance
+
+Each of these inheritance types alters the visibility of the base class members when they are inherited by the derived class.
+
+---
+
+## Key Concepts of Access Specifiers
+- **Public Members**: Members declared as public in the base class are accessible anywhere the object is visible.
+- **Protected Members**: Members declared as protected are accessible only within the base class, its derived classes, and friends of the base class.
+- **Private Members**: Members declared as private are accessible only within the base class and friends of the base class. They are not accessible by derived classes.
+
+---
+
+## 1. Public Inheritance
+
+In public inheritance, the public and protected members of the base class maintain their access levels in the derived class. This is the most commonly used form of inheritance because it models the "is-a" relationship between the base and derived classes.
+
+### Access Levels in Public Inheritance:
+- Public members of the base class become public in the derived class.
+- Protected members of the base class become protected in the derived class.
+- Private members of the base class are not accessible directly in the derived class, but they can still be accessed via public or protected methods of the base class.
+
+### Syntax:
+```cpp
+class Derived : public Base {
+    // Body of derived class
+};
+```
+
+### Example: Public Inheritance
+```cpp
+#include <iostream>
+using namespace std;
+
+// Base class
+class Animal {
+public:
+    void eat() {
+        cout << "This animal is eating." << endl;
+    }
+protected:
+    void sleep() {
+        cout << "This animal is sleeping." << endl;
+    }
+private:
+    void breathe() {
+        cout << "This animal is breathing." << endl;
+    }
+};
+
+// Derived class with public inheritance
+class Dog : public Animal {
+public:
+    void bark() {
+        cout << "The dog is barking." << endl;
+        sleep();  // Accessing protected member
+    }
+};
+
+int main() {
+    Dog dog;
+    dog.eat();    // Public in Animal, public in Dog
+    dog.bark();   // Method of Dog
+    // dog.sleep();  // Error: sleep is protected in Dog
+    return 0;
+}
+```
+
+---
+
+### Explanation:
+- **Public Members (eat())**: The `eat()` method is public in Animal and remains public in Dog. It can be accessed directly through a Dog object.
+- **Protected Members (sleep())**: The `sleep()` method is protected in Animal and remains protected in Dog. It can be accessed inside the Dog class but not directly through a Dog object.
+- **Private Members (breathe())**: The `breathe()` method is private in Animal and is not accessible in Dog or from a Dog object.
+
+---
+
+## 2. Private Inheritance
+
+In private inheritance, all the public and protected members of the base class become private members in the derived class. This means that no outside class can access the base class members via the derived class, even if those members were public in the base class.
+
+### Access Levels in Private Inheritance:
+- Public members of the base class become private in the derived class.
+- Protected members of the base class become private in the derived class.
+- Private members of the base class remain private and inaccessible in the derived class.
+
+Private inheritance is usually used when you want to reuse the functionality of the base class without exposing its interface to the users of the derived class.
+
+### Syntax:
+```cpp
+class Derived : private Base {
+    // Body of derived class
+};
+```
+
+### Example: Private Inheritance
+```cpp
+#include <iostream>
+using namespace std;
+
+// Base class
+class Animal {
+public:
+    void eat() {
+        cout << "This animal is eating." << endl;
+    }
+protected:
+    void sleep() {
+        cout << "This animal is sleeping." << endl;
+    }
+};
+
+// Derived class with private inheritance
+class Dog : private Animal {
+public:
+    void bark() {
+        cout << "The dog is barking." << endl;
+        eat();   // Public in Animal, but private in Dog
+        sleep(); // Protected in Animal, but private in Dog
+    }
+};
+
+int main() {
+    Dog dog;
+    dog.bark();  // Dog's method
+    // dog.eat();   // Error: eat is private in Dog
+    // dog.sleep(); // Error: sleep is private in Dog
+    return 0;
+}
+```
+
+---
+
+### Explanation:
+- **Public Members (eat())**: The `eat()` method, though public in Animal, becomes private in Dog. It can only be accessed within the Dog class and not through a Dog object.
+- **Protected Members (sleep())**: The `sleep()` method is protected in Animal but becomes private in Dog. It can be used within the Dog class but not accessed from outside.
+- **Access in Dog**: Inside the `bark()` method, Dog can call both `eat()` and `sleep()` because they are now private members of Dog.
+
+---
+
+## 3. Protected Inheritance
+
+In protected inheritance, the public and protected members of the base class become protected members in the derived class. This means that even though public members of the base class remain accessible to the derived class and its subclasses, they cannot be accessed directly from objects of the derived class.
+
+Protected inheritance is less common but is useful when you want to allow derived classes to use the base class's members while restricting their access from outside the class hierarchy.
+
+### Access Levels in Protected Inheritance:
+- Public members of the base class become protected in the derived class.
+- Protected members of the base class remain protected in the derived class.
+- Private members of the base class remain private and inaccessible in the derived class.
+
+### Syntax:
+```cpp
+class Derived : protected Base {
+    // Body of derived class
+};
+```
+
+### Example: Protected Inheritance
+```cpp
+#include <iostream>
+using namespace std;
+
+// Base class
+class Animal {
+public:
+    void eat() {
+        cout << "This animal is eating." << endl;
+    }
+protected:
+    void sleep() {
+        cout << "This animal is sleeping." << endl;
+    }
+};
+
+// Derived class with protected inheritance
+class Dog : protected Animal {
+public:
+    void bark() {
+        cout << "The dog is barking." << endl;
+        eat();   // Public in Animal, but protected in Dog
+        sleep(); // Protected in Animal, protected in Dog
+    }
+};
+
+int main() {
+    Dog dog;
+    dog.bark();  // Dog's method
+    // dog.eat();   // Error: eat is protected in Dog
+    // dog.sleep(); // Error: sleep is protected in Dog
+    return 0;
+}
+```
+
+---
+
+### Explanation:
+- **Public Members (eat())**: The `eat()` method is public in Animal but becomes protected in Dog. It can only be accessed within Dog or its derived classes, but not from outside through a Dog object.
+- **Protected Members (sleep())**: The `sleep()` method remains protected in Dog. It can be accessed within the Dog class but not from outside.
+- **Access in Dog**: The `bark()` method of Dog can access both `eat()` and `sleep()` because they are protected members.
+
+---
+
+## Summary of Public, Private, and Protected Inheritance
+
+| Inheritance Type    | Public Members in Base   | Protected Members in Base   | Private Members in Base  |
+|---------------------|--------------------------|-----------------------------|--------------------------|
+| Public Inheritance   | Public in Derived        | Protected in Derived         | Not accessible            |
+| Private Inheritance  | Private in Derived       | Private in Derived           | Not accessible            |
+| Protected Inheritance| Protected in Derived     | Protected in Derived         | Not accessible            |
